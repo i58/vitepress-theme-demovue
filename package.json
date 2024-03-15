@@ -1,0 +1,57 @@
+{
+    "name": "vitepress-theme-demovue",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "vitepress-theme-demovue",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/i58/vitepress-theme-demovue"
+    },
+    "keywords": [
+        "vitepress",
+        "vue",
+        "theme",
+        "demoblock",
+        "demovue"
+    ],
+    "bugs": {
+        "url": "https://github.com/i58/vitepress-theme-demovue/issues"
+    },
+    "homepage": "https://github.com/i58/vitepress-theme-demovue#readme",
+    "author": "gezhigang",
+    "license": "MIT",
+    "files": [
+        "bin",
+        "dist",
+        ".prettierrc"
+    ],
+    "main": "dist/node/index.mjs",
+    "types": "dist/node/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/node/index.d.ts",
+            "import": "./dist/node/index.mjs"
+        },
+        "./dist/*": "./dist/*"
+    },
+    "scripts": {
+        "build": "unbuild",
+        "stub": "unbuild --stub"
+    },
+    "dependencies": {
+        "markdown-it": "^14.0.0",
+        "vitepress-theme-demoblock": "^3.0.3",
+        "markdown-it-container": "^4.0.0",
+        "vue": "^3.4.15"
+    },
+    "devDependencies": {
+        "@types/markdown-it": "^13.0.7",
+        "@vitejs/plugin-vue": "^5.0.3",
+        "@vitejs/plugin-vue-jsx": "^3.1.0",
+        "@types/node": "^20.11.27",
+        "typescript": "~5.3.0",
+        "unbuild": "^2.0.0",
+        "vite": "^5.0.11",
+        "vue-tsc": "^1.8.27"
+    }
+}
