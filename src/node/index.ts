@@ -6,12 +6,13 @@ import path from 'node:path'
 import mdContainer from 'markdown-it-container'
 
 export interface DemovueMarkdownPluginOptions {
-    docRoot: string
+    docRoot: string;
+    blockName?: string;
 }
 
 export interface DemovueVitePluginOptions {
     include: string | string[];
-    docRoot: string;
+    viteAlias: string;
     customName?: (compName: string) => string;
 }
 
@@ -31,10 +32,10 @@ export function demovueVitePlugin(options: DemovueVitePluginOptions): Plugin {
             const isComponent = new RegExp(includes.map(it => `.*\\/docs\\/${it}\\/[^/]*\\.md$`).join('|')).test(id)
             if(!isComponent) return code
             const basename = path.basename(id, '.md')
-            const componentId = isFunc(options.customName) ? options.customName(basename) : basename
+            const componentId = isFunc(options.customName) ? options.customName(id) : basename
             const codeStr = combineScriptSetup([
-                // ~/ 是在/docs/vite.config.ts 中配置的路径别名
-                `const VUEDEMO_DEMOS = import.meta.glob('${options}/examples/${componentId}/*.vue', { eager: true })`,
+                // viteAlias https://vitejs.dev/guide/features.html#glob-import-caveats
+                `const VUEDEMO_DEMOS = import.meta.glob('${options.viteAlias}/examples/${componentId}/*.vue', { eager: true })`,
             ])
             return combineMarkdown(code, [codeStr], [])
         },
@@ -71,7 +72,8 @@ const combineMarkdown = (
  * markdown-it 扩展
  */
 export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOptions) => {
-    md.use(mdContainer, 'lcdp', {
+    const BLOCK_NAME = options.blockName || 'demovue'
+    md.use(mdContainer, BLOCK_NAME, {
         validate(params: string) {
             return params.trim().match(/^lcdp\s*(.*)$/)
         },
