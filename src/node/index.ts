@@ -73,9 +73,10 @@ const combineMarkdown = (
  */
 export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOptions) => {
     const BLOCK_NAME = options.blockName || 'demovue'
+    const REG_EXP = new RegExp(`^${BLOCK_NAME}\\s*(.*)$`)
     md.use(mdContainer, BLOCK_NAME, {
         validate(params: string) {
-            return params.trim().match(/^lcdp\s*(.*)$/)
+            return params.trim().match(REG_EXP)
         },
         render(tokens: any[], idx: number) {
             /* means the tag is opening */
