@@ -10,7 +10,7 @@
 import { computed } from 'vue';
 
 defineOptions({
-    name: 'VueDemo'
+    name: 'DemoVue'
 })
 
 const props = defineProps({

@@ -5,15 +5,41 @@ import path from 'node:path'
 // @ts-ignore
 import mdContainer from 'markdown-it-container'
 
+const DEMO_COMPONENTS_KEY = 'DEMO_COMPONENTS'
+
 export interface DemovueMarkdownPluginOptions {
-    docRoot: string;
+    /**
+     * vitepress文档的根路径，默认是 docs
+     */
+    root: string;
+    /**
+     * 代码块名称  默认vue
+     * ```
+     * ::: vue
+     * button/index.vue
+     * ::: 
+     * ```
+     */
     blockName?: string;
 }
 
 export interface DemovueVitePluginOptions {
-    include: string | string[];
+    /**
+     * vitepress文档的根路径，默认是 docs
+     */
+    root: string;
+    /**
+     * 当前项目下vite配置的路径别名
+     */
     viteAlias: string;
-    customName?: (compName: string) => string;
+    /**
+     * 包含哪些路径，只有路径下的文件才会处理 `blockName`
+     */
+    include: string | string[];
+    /**
+     * 自定义的路径民初
+     */
+    loadDir?: (compName: string) => string;
 }
 
 const isFunc = (val: any): val is (...args: any[]) => any => {
@@ -22,20 +48,21 @@ const isFunc = (val: any): val is (...args: any[]) => any => {
 /**
  * vite插件
  */
-export function demovueVitePlugin(options: DemovueVitePluginOptions): Plugin {
+export function demovueVitePlugin(options: DemovueVitePluginOptions = {} as any): Plugin {
+    const ROOT = (options.root || 'docs').replace(/^\//, '')
     return {
         name: 'demovue-md-transform',
         enforce: 'pre',
         async transform(code, id) {
             if (!id.endsWith('.md')) return code
             const includes = Array.isArray(options.include) ? options.include : [options.include]
-            const isComponent = new RegExp(includes.map(it => `.*\\/docs\\/${it}\\/[^/]*\\.md$`).join('|')).test(id)
+            const isComponent = new RegExp(includes.map(it => `.*\\/${ROOT}\\/${it}\\/[^/]*\\.md$`).join('|')).test(id)
             if(!isComponent) return code
             const basename = path.basename(id, '.md')
-            const componentId = isFunc(options.customName) ? options.customName(id) : basename
+            const componentId = isFunc(options.loadDir) ? options.loadDir(id) : basename
             const codeStr = combineScriptSetup([
                 // viteAlias https://vitejs.dev/guide/features.html#glob-import-caveats
-                `const VUEDEMO_DEMOS = import.meta.glob('${options.viteAlias}/examples/${componentId}/*.vue', { eager: true })`,
+                `const ${DEMO_COMPONENTS_KEY} = import.meta.glob('${options.viteAlias}/examples/${componentId}/*.vue', { eager: true })`,
             ])
             return combineMarkdown(code, [codeStr], [])
         },
@@ -71,8 +98,9 @@ const combineMarkdown = (
 /**
  * markdown-it 扩展
  */
-export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOptions) => {
-    const BLOCK_NAME = options.blockName || 'demovue'
+export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOptions = {} as any) => {
+    const BLOCK_NAME = options.blockName || 'vue'
+    const ROOT = (options.root || 'docs')
     const REG_EXP = new RegExp(`^${BLOCK_NAME}\\s*(.*)$`)
     md.use(mdContainer, BLOCK_NAME, {
         validate(params: string) {
@@ -87,15 +115,15 @@ export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOpt
                 // console.log('*************', sourceFile)
                 if (sourceFileToken.type === 'inline') {
                     // 获取代码code，用于展示
-                    source = fs.readFileSync(path.resolve(options.docRoot, 'examples', sourceFile), 'utf-8')
+                    source = fs.readFileSync(path.resolve(ROOT, 'examples', sourceFile), 'utf-8')
                 }
                 if (!source) throw new Error(`源文件路径不正确: ${sourceFile}`)
 
-                return `<vue-demo :demos="VUEDEMO_DEMOS" source="${encodeURIComponent(
+                return `<demo-vue :demos="${DEMO_COMPONENTS_KEY}" source="${encodeURIComponent(
                     md.options.highlight?.(source, 'vue', '') as any
                 )}" path="${sourceFile}">`
             } else {
-                return '</vue-demo>'
+                return '</demo-vue>'
             }
         }
     })

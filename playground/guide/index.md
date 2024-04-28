@@ -2,7 +2,7 @@
 
 ## 简介
 
-`vitepress-theme-demovue` 是基于itepress-theme-demoblock的一个组件，主要添加直接渲染vue组件的功能
+`vitepress-theme-demovue` 是基于[vitepress-theme-demoblock](https://github.com/xinlei3166/vitepress-theme-demoblock)的一个插件，主要添加直接渲染vue组件的功能
 
 ## 安装
 
@@ -75,9 +75,9 @@ export default {
 
 export interface DemovueMarkdownPluginOptions {
     /**
-     * vitepress文档的根路径，默认是 docs
+     * vitepress文档的根路径，默认 path.resolve(__dirname, '../')
      */
-    docRoot: string;
+    root: string;
     /**
      * 代码块名称  默认vue
      * ```
@@ -93,7 +93,7 @@ export interface DemovueVitePluginOptions {
     /**
      * vitepress文档的根路径，默认是 docs
      */
-    docRoot: string;
+    root: string;
     /**
      * 当前项目下vite配置的路径别名
      */
@@ -103,8 +103,46 @@ export interface DemovueVitePluginOptions {
      */
     include: string | string[];
     /**
-     * 自定义的路径民初
+     * 加载examples下文件夹的名称
      */
-    customName?: (compName: string) => string;
+    loadDir?: (compName: string) => string;
 }
+```
+
+## 配置示例
+
+```ts
+export default defineConfig({
+
+    markdown: {
+        config: (md) => {
+            md.use(demoblockPlugin)
+            md.use(demovueMarkdownPlugin, {
+                root: path.resolve(__dirname, '../')
+            })
+        }
+    },
+
+    vite: {
+        plugins: [
+            vueJsx(),
+            demovueVitePlugin({
+                root: 'playground',
+                viteAlias: '@',
+                include: ['guide'],
+                loadDir(id) {
+                    const basename = path.basename(id, ".md");
+                    //===  /other.md$/.test(id) ? 'other' :'guide'
+                    return basename === 'other' ? 'other' :'guide'
+                },
+            }),
+            demoblockVitePlugin()
+        ],
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, '../')
+            }
+        }
+    },
+})
 ```

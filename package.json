@@ -1,6 +1,6 @@
 {
     "name": "vitepress-theme-demovue",
-    "version": "0.3.0",
+    "version": "0.1.0",
     "type": "module",
     "description": "vitepress-theme-demovue",
     "repository": {
@@ -40,7 +40,7 @@
     },
     "dependencies": {
         "markdown-it": "^14.0.0",
-        "vitepress-theme-demoblock": "^3.0.3",
+        "vitepress-theme-demoblock": "^3.0.7",
         "markdown-it-container": "^4.0.0",
         "vue": "^3.4.15"
     },

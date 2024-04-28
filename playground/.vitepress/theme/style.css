@@ -1,0 +1,7 @@
+:root {
+    --vp-code-vue-bg: #f9fafb !important;
+}
+
+html.dark {
+    --vp-code-vue-bg: var(--vp-c-bg-alt, #161618) !important;
+}
