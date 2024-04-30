@@ -103,8 +103,8 @@ export interface DemovueVitePluginOptions {
      */
     include: string | string[];
     /**
-     * 自定义的路径民初
+     * 哪些文件需要加载 vue文件
      */
-    loadDir?: (compName: string) => string;
+    loadDir?: (path: string) => string;
 }
 ```
