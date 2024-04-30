@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
-
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from "node:url";
 // @ts-ignore
 import mdContainer from 'markdown-it-container'
 
@@ -99,6 +99,8 @@ const combineMarkdown = (
  */
 export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOptions = {} as any) => {
     const BLOCK_NAME = options.blockName || 'vue'
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     const ROOT = (options.root || path.resolve(__dirname, 'docs'))
     const REG_EXP = new RegExp(`^${BLOCK_NAME}\\s*(.*)$`)
     md.use(mdContainer, BLOCK_NAME, {
