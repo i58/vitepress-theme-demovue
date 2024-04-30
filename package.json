@@ -1,11 +1,11 @@
 {
     "name": "vitepress-theme-demovue",
-    "version": "0.1.0",
+    "version": "0.6.0",
     "type": "module",
     "description": "vitepress-theme-demovue",
     "repository": {
         "type": "git",
-        "url": "https://github.com/i58/vitepress-theme-demovue"
+        "url": "git+https://github.com/i58/vitepress-theme-demovue.git"
     },
     "keywords": [
         "vitepress",
