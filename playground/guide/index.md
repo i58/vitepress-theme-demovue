@@ -75,7 +75,7 @@ export default {
 
 export interface DemovueMarkdownPluginOptions {
     /**
-     * vitepress文档的根路径，默认 path.resolve(__dirname, '../')
+     * vitepress文档的根路径，默认是 path.resolve(__dirname, 'docs')
      */
     root: string;
     /**
@@ -91,9 +91,9 @@ export interface DemovueMarkdownPluginOptions {
 
 export interface DemovueVitePluginOptions {
     /**
-     * vitepress文档的根路径，默认是 docs
+     * vitepress文档的根路径名称，默认是 docs
      */
-    root: string;
+    rootName: string;
     /**
      * 当前项目下vite配置的路径别名
      */
@@ -103,7 +103,7 @@ export interface DemovueVitePluginOptions {
      */
     include: string | string[];
     /**
-     * 加载examples下文件夹的名称
+     * 自定义的路径民初
      */
     loadDir?: (compName: string) => string;
 }
@@ -127,7 +127,7 @@ export default defineConfig({
         plugins: [
             vueJsx(),
             demovueVitePlugin({
-                root: 'playground',
+                rootName: 'playground',
                 viteAlias: '@',
                 include: ['guide'],
                 loadDir(id) {

@@ -25,7 +25,7 @@ export default defineConfig({
         plugins: [
             vueJsx(),
             demovueVitePlugin({
-                root: 'playground',
+                rootName: 'playground',
                 viteAlias: '@',
                 include: ['guide'],
                 loadDir(id) {

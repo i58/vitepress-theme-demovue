@@ -27,7 +27,7 @@ export interface DemovueVitePluginOptions {
     /**
      * vitepress文档的根路径，默认是 docs
      */
-    root: string;
+    rootName: string;
     /**
      * 当前项目下vite配置的路径别名
      */
@@ -49,14 +49,13 @@ const isFunc = (val: any): val is (...args: any[]) => any => {
  * vite插件
  */
 export function demovueVitePlugin(options: DemovueVitePluginOptions = {} as any): Plugin {
-    const ROOT = (options.root || 'docs').replace(/^\//, '')
     return {
         name: 'demovue-md-transform',
         enforce: 'pre',
         async transform(code, id) {
             if (!id.endsWith('.md')) return code
             const includes = Array.isArray(options.include) ? options.include : [options.include]
-            const isComponent = new RegExp(includes.map(it => `.*\\/${ROOT}\\/${it}\\/[^/]*\\.md$`).join('|')).test(id)
+            const isComponent = new RegExp(includes.map(dir => `.*\\/${options.rootName || 'docs'}\\/${dir}\\/[^/]*\\.md$`).join('|')).test(id)
             if(!isComponent) return code
             const basename = path.basename(id, '.md')
             const componentId = isFunc(options.loadDir) ? options.loadDir(id) : basename
@@ -100,7 +99,7 @@ const combineMarkdown = (
  */
 export const demovueMarkdownPlugin = (md: any, options: DemovueMarkdownPluginOptions = {} as any) => {
     const BLOCK_NAME = options.blockName || 'vue'
-    const ROOT = (options.root || 'docs')
+    const ROOT = (options.root || path.resolve(__dirname, 'docs'))
     const REG_EXP = new RegExp(`^${BLOCK_NAME}\\s*(.*)$`)
     md.use(mdContainer, BLOCK_NAME, {
         validate(params: string) {

@@ -75,9 +75,9 @@ export default {
 
 export interface DemovueMarkdownPluginOptions {
     /**
-     * vitepress文档的根路径，默认是 docs
+     * vitepress文档的根路径，默认是 path.resolve(__dirname, 'docs')
      */
-    docRoot: string;
+    root: string;
     /**
      * 代码块名称  默认vue
      * ```
@@ -91,9 +91,9 @@ export interface DemovueMarkdownPluginOptions {
 
 export interface DemovueVitePluginOptions {
     /**
-     * vitepress文档的根路径，默认是 docs
+     * vitepress文档的根路径名称，默认是 docs
      */
-    docRoot: string;
+    rootName: string;
     /**
      * 当前项目下vite配置的路径别名
      */
@@ -105,6 +105,6 @@ export interface DemovueVitePluginOptions {
     /**
      * 自定义的路径民初
      */
-    customName?: (compName: string) => string;
+    loadDir?: (compName: string) => string;
 }
 ```
